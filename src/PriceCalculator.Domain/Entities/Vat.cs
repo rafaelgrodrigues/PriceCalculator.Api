@@ -11,5 +11,5 @@ public class Vat
         Value = value;
     }
 
-    public static Vat Create(int percentage, decimal net) => new(percentage, percentage * net);
+    public static Vat Create(int percentage, decimal net) => new(percentage, ((decimal)percentage/100) * net);
 }

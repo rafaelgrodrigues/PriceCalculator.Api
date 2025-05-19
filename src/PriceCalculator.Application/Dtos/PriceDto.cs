@@ -2,7 +2,7 @@
 
 public class PriceDto
 {
-    public decimal Gross { get; set; }
-    public decimal Net { get; set; }
-    public VatDto VAT { get; set; }
+    public required decimal Gross { get; set; }
+    public required decimal Net { get; set; }
+    public required VatDto VAT { get; set; }
 }

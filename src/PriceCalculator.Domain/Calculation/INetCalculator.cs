@@ -3,5 +3,5 @@
 public interface INetCalculator
 {
     CalculatorStrategyType StrategyType { get; }
-    decimal Calculate(decimal baseValue, int vatPercentage);
+    Task<decimal> Calculate(decimal baseValue, int vatPercentage);
 }
