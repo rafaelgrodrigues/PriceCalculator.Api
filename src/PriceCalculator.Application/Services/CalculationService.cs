@@ -6,9 +6,10 @@ using PriceCalculator.Domain.Entities;
 
 namespace PriceCalculator.Application.Services;
 
-public class CalculationService : ICalculationService
+public class CalculationService(IEnumerable<INetCalculator> calculators) : ICalculationService
 {
-    private CalculatorContext CalculatorContext;
+    private readonly IEnumerable<INetCalculator> _calculators = calculators;
+
     public PriceDto Calculate(PriceRequest priceRequest)
     {
         if (priceRequest.Net.HasValue)
@@ -19,19 +20,16 @@ public class CalculationService : ICalculationService
             return new PriceDto();
         }
 
-        var baseValue = priceRequest.Gross ?? priceRequest.VatValue;
+        var strategyType = priceRequest.Gross.HasValue ?
+            CalculatorStrategyType.ByGross : CalculatorStrategyType.ByVat;
 
-        CalculatorContext = new CalculatorContext(GetStrategy(priceRequest));
-        priceRequest.Net = CalculatorContext.Calculate(baseValue.Value, priceRequest.VatPercentage);
+        var baseValue = strategyType == CalculatorStrategyType.ByGross ?
+            priceRequest.Gross.Value : priceRequest.VatValue.Value;
+
+        var calculator = _calculators.First(calculator => calculator.StrategyType.Equals(strategyType));
+        
+        priceRequest.Net = calculator.Calculate(baseValue, priceRequest.VatPercentage);
 
         return Calculate(priceRequest);
-    }
-
-    private static INetCalculator GetStrategy(PriceRequest price)
-    {
-        if (price.Gross.HasValue)
-            return new CalculatorByGrossStratagy();
-
-        return new CalculatorByVatStratagy();
     }
 }
