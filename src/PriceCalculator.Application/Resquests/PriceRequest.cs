@@ -1,14 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace PriceCalculator.Application.Resquests;
-
-public class PriceRequestDto
-{
-    public decimal? Net { get; set; }
-    public decimal? Gross { get; set; }
-    public decimal? VatValue { get; set; }
-    public int VatPercentage { get; set; }
-}
+﻿namespace PriceCalculator.Application.Resquests;
 
 public class PriceRequest
 {

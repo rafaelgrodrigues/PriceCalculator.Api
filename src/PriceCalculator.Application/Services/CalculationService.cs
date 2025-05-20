@@ -45,11 +45,8 @@ public class CalculationService(
         }
         catch (Exception ex)
         {
-            logger.LogError(ex.Message);
-
-            Result<PriceDto>.Failure(new Error(ex.HResult.ToString(), ex.Message));
-            throw;
+            _logger.LogError(ex.Message);
+            return Result<PriceDto>.Failure(new Error(ex.HResult.ToString(), ex.Message));
         }
-
     }
 }

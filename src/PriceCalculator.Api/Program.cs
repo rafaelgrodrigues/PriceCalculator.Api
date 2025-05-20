@@ -5,10 +5,8 @@ using PriceCalculator.Api.EndpointFilters;
 using PriceCalculator.Api.Extentions;
 using PriceCalculator.Application.Dtos;
 using PriceCalculator.Application.Interfaces;
-using PriceCalculator.Application.Profiles;
 using PriceCalculator.Application.Resquests;
 using PriceCalculator.Application.Results;
-using System.Runtime.CompilerServices;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -48,6 +46,7 @@ app.MapPost("/Prices", async Task<Results<Created<PriceDto>, InternalServerError
         return TypedResults.Created(string.Empty, result.Data);
 
     return TypedResults.InternalServerError();
+
 }).AddEndpointFilter<PostPriceFilter>()
   .Produces<IEnumerable<Error>>(422);
 

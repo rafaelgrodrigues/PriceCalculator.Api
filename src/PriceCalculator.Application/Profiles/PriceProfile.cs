@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using AutoMapper.Execution;
 using PriceCalculator.Application.Dtos;
 using PriceCalculator.Application.Resquests;
 using PriceCalculator.Domain.Entities;
