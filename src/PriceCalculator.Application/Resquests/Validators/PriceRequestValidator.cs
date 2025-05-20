@@ -49,9 +49,9 @@ public class PriceRequestValidator : AbstractValidator<PriceRequest>
             .WithMessage(GreaterThanErrorMEssage)
             .When(request => ValidateDecimalPattern(request.VatValue ?? string.Empty));
 
-        RuleFor(request => request.VatPercentage)
-            .Must(percentage => percentage.Equals("10") || percentage.Equals("13") || percentage.Equals("20"))
-            .WithMessage("Inform a valid VatPercentage(10, 13 or 20)");
+        RuleFor(request => request.VatRate)
+            .Must(rate => rate.Equals("10") || rate.Equals("13") || rate.Equals("20"))
+            .WithMessage("Inform a valid VatRate(10, 13 or 20)");
     }
     private bool ValidateDecimalPattern(string value) => Regex.IsMatch(value, RegexDecimal);
 }

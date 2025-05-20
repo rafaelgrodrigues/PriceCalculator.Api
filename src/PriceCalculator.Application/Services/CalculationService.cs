@@ -12,33 +12,30 @@ namespace PriceCalculator.Application.Services;
 public class CalculationService(
     IEnumerable<INetCalculator> calculators,
     IMapper mapper,
-    ILogger<CalculationService> logger,
-    PriceValidator priceValidator) : ICalculationService
+    ILogger<CalculationService> logger) : ICalculationService
 {
     private readonly IEnumerable<INetCalculator> _calculators = calculators;
     private readonly IMapper _mapper = mapper;
     private readonly ILogger<CalculationService> _logger = logger;
-    private readonly PriceValidator _priceValidator = priceValidator;
+
     public async Task<Result<PriceDto>> Calculate(PriceRequestDto priceRequest)
     {
         try
         {
             if (priceRequest.Net.HasValue)
             {
-                var vat = Vat.Create(priceRequest.VatPercentage, priceRequest.Net.Value);
+                var vat = Vat.Create(priceRequest.VatRate, priceRequest.Net.Value);
                 var price = new Price(priceRequest.Net.Value, vat);
+                var validation = new PriceValidator().Validate(price);
 
-                var validation = _priceValidator.Validate(price);
                 if (!validation.IsValid)
                     return Result<PriceDto>.Failure(validation.Errors.Select(e => new Error(e.PropertyName, e.ErrorMessage)));
 
                 var priceDto = _mapper.Map<PriceDto>(price);
-
                 return Result<PriceDto>.Success(priceDto);
             }
 
             priceRequest.Net = await CalculateNet(priceRequest);
-
             return await Calculate(priceRequest);
         }
         catch (Exception ex)
@@ -58,6 +55,6 @@ public class CalculationService(
 
         var calculator = _calculators.First(calculator => calculator.StrategyType.Equals(strategyType));
 
-        return await calculator.Calculate(baseValue, priceRequest.VatPercentage);
+        return await calculator.Calculate(baseValue, priceRequest.VatRate);
     }
 }

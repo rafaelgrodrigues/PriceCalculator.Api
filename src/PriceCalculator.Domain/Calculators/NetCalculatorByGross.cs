@@ -4,6 +4,6 @@ public class NetCalculatorByGross : INetCalculator
 {
     public NetCalculatorType StrategyType => NetCalculatorType.ByGross;
 
-    public Task<decimal> Calculate(decimal gross, int vatPercentage)
-        => Task.FromResult((gross * 100) / (100 + vatPercentage));
+    public Task<decimal> Calculate(decimal gross, int vatRate)
+        => Task.FromResult((gross * 100) / (100 + vatRate));
 }

@@ -24,9 +24,9 @@ public class PriceProfile : Profile
                 opt.PreCondition(src => src.VatValue != null);
                 opt.MapFrom(src => (decimal?)decimal.Parse(src.VatValue.Replace(',', '.')));
             })
-            .ForMember(dest => dest.VatPercentage, opt => {
-                opt.PreCondition(src => src.VatPercentage != null);
-                opt.MapFrom(src => int.Parse(src.VatPercentage));
+            .ForMember(dest => dest.VatRate, opt => {
+                opt.PreCondition(src => src.VatRate != null);
+                opt.MapFrom(src => int.Parse(src.VatRate));
             });
     }
 }

@@ -2,7 +2,7 @@
 
 public class VatDto
 {
-    public required int Percentage { get; set; }
+    public required int Rate { get; set; }
     public required decimal Value { get; set; }
 }
 

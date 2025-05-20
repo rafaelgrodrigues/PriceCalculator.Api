@@ -2,15 +2,15 @@
 
 public class Vat
 {    
-    public int Percentage { get; }
+    public int Rate { get; }
     public decimal Value { get; }
     
-    private Vat(int percentage, decimal value)
+    private Vat(int rate, decimal value)
     {
-        Percentage = percentage;
+        Rate = rate;
         Value = Math.Round(value, 2, MidpointRounding.AwayFromZero);
     }
 
-    public static Vat Create(int percentage, decimal net) 
-        => new(percentage, ((decimal)percentage/100) * net);
+    public static Vat Create(int rate, decimal net) 
+        => new(rate, ((decimal)rate/100) * net);
 }

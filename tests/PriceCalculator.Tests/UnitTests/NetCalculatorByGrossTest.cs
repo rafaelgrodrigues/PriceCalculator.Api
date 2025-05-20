@@ -16,9 +16,9 @@ public class NetCalculatorByGrossTest
     [InlineData(110.1, 10, 100.09)]
     [InlineData(146.9, 13, 130)]
     [InlineData(193.92, 20, 161.6)]
-    public async Task Calculate_When_ValidInputs(decimal gross, int vatPercentage, decimal expectedResult)
+    public async Task Calculate_When_ValidInputs(decimal gross, int vatRate, decimal expectedResult)
     {
-        var result = await netCalculatorByGross.Calculate(gross, vatPercentage);
+        var result = await netCalculatorByGross.Calculate(gross, vatRate);
         Assert.Equal(expectedResult, result, 2);
     }
 }
