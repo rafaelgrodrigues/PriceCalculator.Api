@@ -33,7 +33,7 @@ if (!app.Environment.IsProduction())
 
 app.UseHttpsRedirection();
 
-app.MapPost("/Prices", async Task<Results<Created<PriceDto>, InternalServerError>> (
+app.MapPost("/Prices", async Task<Results<Created<PriceDto>, UnprocessableEntity<IEnumerable<Error>>>> (
     [FromBody] PriceRequest request,
     ICalculationService service,
     IMapper mapper
@@ -45,7 +45,7 @@ app.MapPost("/Prices", async Task<Results<Created<PriceDto>, InternalServerError
     if (result.IsSuccess)
         return TypedResults.Created(string.Empty, result.Data);
 
-    return TypedResults.InternalServerError();
+    return TypedResults.UnprocessableEntity(result.Errors);
 
 }).AddEndpointFilter<PostPriceFilter>()
   .Produces<IEnumerable<Error>>(422);

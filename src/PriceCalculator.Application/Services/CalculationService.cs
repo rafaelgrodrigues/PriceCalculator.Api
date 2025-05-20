@@ -2,21 +2,23 @@
 using Microsoft.Extensions.Logging;
 using PriceCalculator.Application.Dtos;
 using PriceCalculator.Application.Interfaces;
-using PriceCalculator.Application.Resquests;
 using PriceCalculator.Application.Results;
 using PriceCalculator.Domain.Calculation;
 using PriceCalculator.Domain.Entities;
+using PriceCalculator.Domain.Validators;
 
 namespace PriceCalculator.Application.Services;
 
 public class CalculationService(
     IEnumerable<INetCalculator> calculators,
     IMapper mapper,
-    ILogger<CalculationService> logger) : ICalculationService
+    ILogger<CalculationService> logger,
+    PriceValidator priceValidator) : ICalculationService
 {
     private readonly IEnumerable<INetCalculator> _calculators = calculators;
     private readonly IMapper _mapper = mapper;
     private readonly ILogger<CalculationService> _logger = logger;
+    private readonly PriceValidator _priceValidator = priceValidator;
     public async Task<Result<PriceDto>> Calculate(PriceRequestDto priceRequest)
     {
         try
@@ -25,6 +27,10 @@ public class CalculationService(
             {
                 var vat = Vat.Create(priceRequest.VatPercentage, priceRequest.Net.Value);
                 var price = new Price(priceRequest.Net.Value, vat);
+
+                var validation = _priceValidator.Validate(price);
+                if (!validation.IsValid)
+                    return Result<PriceDto>.Failure(validation.Errors.Select(e => new Error(e.PropertyName, e.ErrorMessage)));
 
                 var priceDto = _mapper.Map<PriceDto>(price);
 
@@ -38,7 +44,7 @@ public class CalculationService(
         catch (Exception ex)
         {
             _logger.LogError(ex.Message);
-            return Result<PriceDto>.Failure(new Error(ex.HResult.ToString(), ex.Message));
+            throw;
         }
     }
 
