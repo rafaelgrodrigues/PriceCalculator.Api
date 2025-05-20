@@ -31,15 +31,7 @@ public class CalculationService(
                 return Result<PriceDto>.Success(priceDto);
             }
 
-            var strategyType = priceRequest.Gross.HasValue ?
-                CalculatorStrategyType.ByGross : CalculatorStrategyType.ByVat;
-
-            var baseValue = strategyType == CalculatorStrategyType.ByGross ?
-                priceRequest.Gross.Value : priceRequest.VatValue.Value;
-
-            var calculator = _calculators.First(calculator => calculator.StrategyType.Equals(strategyType));
-
-            priceRequest.Net = await calculator.Calculate(baseValue, priceRequest.VatPercentage);
+            priceRequest.Net = await CalculateNet(priceRequest);
 
             return await Calculate(priceRequest);
         }
@@ -48,5 +40,18 @@ public class CalculationService(
             _logger.LogError(ex.Message);
             return Result<PriceDto>.Failure(new Error(ex.HResult.ToString(), ex.Message));
         }
+    }
+
+    private async Task<decimal> CalculateNet(PriceRequestDto priceRequest)
+    {
+        var strategyType = priceRequest.Gross.HasValue ?
+            NetCalculatorType.ByGross : NetCalculatorType.ByVat;
+
+        var baseValue = strategyType == NetCalculatorType.ByGross ?
+            priceRequest.Gross.Value : priceRequest.VatValue.Value;
+
+        var calculator = _calculators.First(calculator => calculator.StrategyType.Equals(strategyType));
+
+        return await calculator.Calculate(baseValue, priceRequest.VatPercentage);
     }
 }

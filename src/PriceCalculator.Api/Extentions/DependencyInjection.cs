@@ -10,8 +10,8 @@ namespace PriceCalculator.Api.Extentions
         {
             return services
                 .AddScoped<ICalculationService, CalculationService>()
-                .AddScoped<INetCalculator, CalculatorByGrossStratagy>()
-                .AddScoped<INetCalculator, CalculatorByVatStratagy>();
+                .AddScoped<INetCalculator, NetCalculatorByGross>()
+                .AddScoped<INetCalculator, NetCalculatorByVat>();
         }
     }
 }

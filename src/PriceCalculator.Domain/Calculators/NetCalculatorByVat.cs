@@ -1,8 +1,8 @@
 ﻿namespace PriceCalculator.Domain.Calculation;
 
-public class CalculatorByVatStratagy : INetCalculator
+public class NetCalculatorByVat : INetCalculator
 {
-    public CalculatorStrategyType StrategyType => CalculatorStrategyType.ByVat;
+    public NetCalculatorType StrategyType => NetCalculatorType.ByVat;
 
     public Task<decimal> Calculate(decimal vatValue, int vatPercentage) 
         => Task.FromResult((vatValue * 100) / vatPercentage);

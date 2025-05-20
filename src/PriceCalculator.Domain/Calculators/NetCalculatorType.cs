@@ -1,6 +1,6 @@
 ﻿namespace PriceCalculator.Domain.Calculation;
 
-public enum CalculatorStrategyType
+public enum NetCalculatorType
 {
     ByGross,
     ByVat
