@@ -1,3 +1,4 @@
+using AutoMapper;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using PriceCalculator.Api.EndpointFilters;
@@ -36,16 +37,18 @@ app.UseHttpsRedirection();
 
 app.MapPost("/Prices", async Task<Results<Created<PriceDto>, InternalServerError>> (
     [FromBody] PriceRequest request,
-    ICalculationService service
+    ICalculationService service,
+    IMapper mapper
     ) =>
 {
-    var result = await service.Calculate(request);
+    var requestDto = mapper.Map<PriceRequest, PriceRequestDto>(request);
+    var result = await service.Calculate(requestDto);
 
     if (result.IsSuccess)
         return TypedResults.Created(string.Empty, result.Data);
 
     return TypedResults.InternalServerError();
 }).AddEndpointFilter<PostPriceFilter>()
-  .Produces(422, typeof(IEnumerable<Error>));
+  .Produces<IEnumerable<Error>>(422);
 
 app.Run();

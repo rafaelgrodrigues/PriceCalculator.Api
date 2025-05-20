@@ -17,7 +17,7 @@ public class CalculationService(
     private readonly IEnumerable<INetCalculator> _calculators = calculators;
     private readonly IMapper _mapper = mapper;
     private readonly ILogger<CalculationService> _logger = logger;
-    public async Task<Result<PriceDto>> Calculate(PriceRequest priceRequest)
+    public async Task<Result<PriceDto>> Calculate(PriceRequestDto priceRequest)
     {
         try
         {

@@ -1,5 +1,7 @@
 ﻿
 using PriceCalculator.Application.Resquests;
+using PriceCalculator.Application.Resquests.Validators;
+using PriceCalculator.Application.Results;
 
 namespace PriceCalculator.Api.EndpointFilters
 {
@@ -9,10 +11,12 @@ namespace PriceCalculator.Api.EndpointFilters
             EndpointFilterInvocationContext context, 
             EndpointFilterDelegate next)
         {
-            var result = next(context);
+            var validator = new PriceRequestValidator();
+
             var body = context.GetArgument<PriceRequest>(0);
-            if (body == null)
-                return TypedResults.UnprocessableEntity();
+            var requestValidation = validator.Validate(body);
+            if (!requestValidation.IsValid)
+                return TypedResults.UnprocessableEntity(requestValidation.Errors.Select(a => new Error(a.PropertyName, a.ErrorMessage)));
 
             return await next.Invoke(context);
         }

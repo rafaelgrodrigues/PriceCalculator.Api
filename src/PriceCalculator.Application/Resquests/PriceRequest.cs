@@ -2,14 +2,18 @@
 
 namespace PriceCalculator.Application.Resquests;
 
-public class PriceRequest
+public class PriceRequestDto
 {
-    [RegularExpression("^[0-9]*\\.?[0-9]+$", ErrorMessage = "Please enter valid Net Value")]
     public decimal? Net { get; set; }
     public decimal? Gross { get; set; }
     public decimal? VatValue { get; set; }
-
-    [AllowedValues([10, 15, 20])]
     public int VatPercentage { get; set; }
-    
+}
+
+public class PriceRequest
+{
+    public string? Net { get; set; }
+    public string? Gross { get; set; }
+    public string? VatValue { get; set; }
+    public string VatPercentage { get; set; }
 }

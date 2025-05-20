@@ -6,5 +6,5 @@ namespace PriceCalculator.Application.Interfaces;
 
 public interface ICalculationService
 {
-    Task<Result<PriceDto>> Calculate(PriceRequest priceRequest);
+    Task<Result<PriceDto>> Calculate(PriceRequestDto priceRequest);
 }
