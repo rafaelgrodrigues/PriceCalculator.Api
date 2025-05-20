@@ -1,5 +1,4 @@
 ﻿using PriceCalculator.Domain.Calculation;
-using System.Threading.Tasks;
 
 namespace PriceCalculator.Tests.UnitTests;
 
