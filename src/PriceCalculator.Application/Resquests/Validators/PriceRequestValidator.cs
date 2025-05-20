@@ -7,10 +7,18 @@ public class PriceRequestValidator : AbstractValidator<PriceRequest>
 {
     private const string RegexDecimal = @"^[0-9]+[\.\,][0-9]{1,2}$";
     private const string GreaterThanErrorMEssage = "Must be a numeric value greater than zero.";
-    private const string InvalidNumericErrorMEssage = "Must be a numeric value. Correct format: *#.##";
+    private const string InvalidNumericErrorMEssage = "Must be a numeric value. Correct format is *#.##";
 
     public PriceRequestValidator()
     {
+        RuleFor(request => request)
+            .Must(request => request.Net != null || request.Gross != null || request.VatValue != null)
+            .WithMessage("Inform one of values (Net/Gross/VatValue)");
+
+        RuleFor(request => request)
+            .Must(request => new[] { request.Net, request.Gross, request.VatValue }.Count(c => c != null) == 1)
+            .WithMessage($"Inform only one of values (Net/Gross/VatValue)");
+
         RuleFor(request => request.Net)
            .Matches(RegexDecimal)
            .WithMessage(InvalidNumericErrorMEssage)
@@ -19,7 +27,7 @@ public class PriceRequestValidator : AbstractValidator<PriceRequest>
         RuleFor(request => request.Net)
             .Must(request => decimal.Parse(request) > 0)
             .WithMessage(GreaterThanErrorMEssage)
-            .When(request => ValidateDecimalPattern(request.Net));
+            .When(request => ValidateDecimalPattern(request.Net ?? string.Empty));
 
         RuleFor(request => request.Gross)
             .Matches(RegexDecimal)
@@ -29,7 +37,7 @@ public class PriceRequestValidator : AbstractValidator<PriceRequest>
         RuleFor(request => request.Gross)
             .Must(request => decimal.Parse(request) > 0)
             .WithMessage(GreaterThanErrorMEssage)
-            .When(request => ValidateDecimalPattern(request.Gross));
+            .When(request => ValidateDecimalPattern(request.Gross ?? string.Empty));
 
         RuleFor(request => request.VatValue)
             .Matches(RegexDecimal)
@@ -39,19 +47,11 @@ public class PriceRequestValidator : AbstractValidator<PriceRequest>
         RuleFor(request => request.VatValue)
             .Must(request => decimal.Parse(request) > 0)
             .WithMessage(GreaterThanErrorMEssage)
-            .When(request => ValidateDecimalPattern(request.VatValue));
+            .When(request => ValidateDecimalPattern(request.VatValue ?? string.Empty));
 
         RuleFor(request => request.VatPercentage)
-            .Must(percentage => percentage.Equals(10) || percentage.Equals(15) || percentage.Equals(20))
+            .Must(percentage => percentage.Equals("10") || percentage.Equals("15") || percentage.Equals("20"))
             .WithMessage("Inform a valid VatPercentage(10, 15 or 20)");
-
-        RuleFor(request => request)
-            .Must(request => request.Net != null || request.Gross != null || request.VatValue != null)
-            .WithMessage("Inform one of values (Net/Gross/VatValue)");
-
-        RuleFor(request => request)
-            .Must(request => new[] { request.Net, request.Gross, request.VatValue }.Count(c => c != null) == 1)
-            .WithMessage($"Inform only one of values (Net/Gross/VatValue)");
     }
     private bool ValidateDecimalPattern(string value) => Regex.IsMatch(value, RegexDecimal);
 }
